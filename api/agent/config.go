@@ -33,6 +33,7 @@ type Config struct {
 	EnableNBResourceTracker bool          `json:"enable_nb_resource_tracker"`
 	MaxTmpFsInodes          uint64        `json:"max_tmpfs_inodes"`
 	DisableReadOnlyRootFs   bool          `json:"disable_readonly_rootfs"`
+	MaxImageCacheSize       uint64        `json:"max_image_cache_size"`
 }
 
 const (
@@ -84,6 +85,7 @@ const (
 	// EnvDisableReadOnlyRootFs makes the root fs for a container have rw permissions, by default it is read only
 	EnvDisableReadOnlyRootFs = "FN_DISABLE_READONLY_ROOTFS"
 
+	EnvMaxImageCacheSize = "FN_MAX_IMAGE_CACHE_SIZE"
 	// MaxMsDisabled is used to determine whether mr freeze is lying in wait. TODO remove this manuever
 	MaxMsDisabled = time.Duration(math.MaxInt64)
 
@@ -102,6 +104,7 @@ func NewConfig() (*Config, error) {
 		MaxCallEndStacking: 8192,
 		PreForkImage:       "busybox",
 		PreForkCmd:         "tail -f /dev/null",
+		MaxImageCacheSize:  20 * 1024 * 1024,
 	}
 
 	var err error
@@ -119,6 +122,7 @@ func NewConfig() (*Config, error) {
 	err = setEnvUint(err, EnvMaxFsSize, &cfg.MaxFsSize)
 	err = setEnvUint(err, EnvPreForkPoolSize, &cfg.PreForkPoolSize)
 	err = setEnvUint(err, EnvMaxCallEndStacking, &cfg.MaxCallEndStacking)
+	err = setEnvUint(err, EnvMaxImageCacheSize, &cfg.MaxImageCacheSize)
 	err = setEnvStr(err, EnvPreForkImage, &cfg.PreForkImage)
 	err = setEnvStr(err, EnvPreForkCmd, &cfg.PreForkCmd)
 	err = setEnvUint(err, EnvPreForkUseOnce, &cfg.PreForkUseOnce)
